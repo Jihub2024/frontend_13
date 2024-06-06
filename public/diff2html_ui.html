@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- highlight -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css" />
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" />
+
+    <!-- Javascripts -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js"></script>
+</head>
+
+<body>
+<h1>代码差异界面</h1>
+<div id="myDiffElement">Waiting for data...</div>
+<script>
+    function unescapeString(str) {
+        return str.replace(/\\([bfnrtv"'\\])/g, function(match, char) {
+            switch(char) {
+                case 'b': return '\b'; // 退格符
+                case 'f': return '\f'; // 换页符
+                case 'n': return '\n'; // 换行符
+                case 'r': return '\r'; // 回车符
+                case 't': return '\t'; // 制表符
+                case 'v': return '\v'; // 垂直制表符
+                case "'": return "'";  // 单引号
+                case '"': return '"';  // 双引号
+                case '\\': return '\\'; // 反斜杠
+                default: return match; // 如果无法识别，则保持原样
+            }
+        });
+    }
+
+    window.addEventListener(
+        'message',
+        function(event) {
+            const diffString = unescapeString(event.data.toString());
+            const targetElement = document.getElementById('myDiffElement');
+            const configuration = {
+                inputFormat: 'json',
+                drawFileList: true,
+                matching: 'lines',
+                highlight: true,
+                outputFormat: "side-by-side"
+            };
+            const diff2htmlUi = new Diff2HtmlUI(targetElement, diffString, configuration);
+            diff2htmlUi.draw();
+            diff2htmlUi.highlightCode();
+            diff2htmlUi.fileListToggle(true);
+
+        },
+        false);
+
+</script>
+
+</body>
+
+</html>
